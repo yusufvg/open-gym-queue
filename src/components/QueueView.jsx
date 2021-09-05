@@ -261,12 +261,12 @@ class QueueView extends Component {
             </div>
           </div>
           <div className="row gx-2">
-            <div className="mb-2">
-              <AddPlayerWindow
-                onAddPlayer={this.handleAddPlayer}
-                onAddPlayerToGroup={this.handleAddPlayerToGroup}
-              />
-            </div>
+            {/* <div className="mb-2"> */}
+            <AddPlayerWindow
+              onAddPlayer={this.handleAddPlayer}
+              onAddPlayerToGroup={this.handleAddPlayerToGroup}
+            />
+            {/* </div> */}
             <RulesetWindow
               ruleset={this.state.ruleset}
               onChangeRuleset={this.handleChangeruleset}

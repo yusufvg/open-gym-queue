@@ -33,7 +33,7 @@ class AddPlayerWindow extends React.Component {
   render() {
     return (
       <div className="col-12 col-md-6">
-        <div className="border bg-light p-2 h-100 w-100 d-inline-block">
+        <div className="border bg-light p-2 mb-2">
           <form onSubmit={this.handleSubmit}>
             <h3>Add Player</h3>
             <div className="mb-2">
