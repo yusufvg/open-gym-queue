@@ -23,8 +23,8 @@ class QueueView extends Component {
   };
 
   draftTeam = (team, queue) => {
-    let size = 0;
-    let curr = this.sizeOfItems(team);
+    let size = this.sizeOfItems(team);
+    let curr = 0;
     while (size < 6 && curr < queue.length) {
       const i = queue[curr];
       if (i.size + size <= 6) {
@@ -131,6 +131,18 @@ class QueueView extends Component {
     });
   };
 
+  handleRefillTeam = (num) => {
+    let team = [...this.state.teams[num]];
+    let queue = [...this.state.queue];
+
+    ({ team, queue } = this.draftTeam(team, queue));
+
+    const teams = [...this.state.teams];
+    teams[num] = team;
+
+    this.setState({ teams, queue });
+  };
+
   handleChangeruleset = (ruleset) => {
     this.setState({ ruleset });
   };
@@ -197,8 +209,18 @@ class QueueView extends Component {
           <div className="row gx-2">
             <div className="col-12 col-md-6">
               <div className="row">
-                <TeamWindow num="1" team={this.state.teams[0]} />
-                <TeamWindow num="2" team={this.state.teams[1]} />
+                <TeamWindow
+                  num="1"
+                  team={this.state.teams[0]}
+                  size={this.sizeOfItems(this.state.teams[0])}
+                  onRefillTeam={() => this.handleRefillTeam(0)}
+                />
+                <TeamWindow
+                  num="2"
+                  team={this.state.teams[1]}
+                  size={this.sizeOfItems(this.state.teams[1])}
+                  onRefillTeam={() => this.handleRefillTeam(1)}
+                />
               </div>
             </div>
             <div className="col-12 col-md-6">

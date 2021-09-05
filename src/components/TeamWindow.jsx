@@ -1,7 +1,7 @@
 import React from "react";
 import QueueItemCard from "./QueueItemCard";
 
-const TeamWindow = ({ num, team }) => {
+const TeamWindow = ({ num, team, size, onRefillTeam }) => {
   return (
     <div className="col-12 col-xl-6">
       <div className="mb-2">
@@ -10,6 +10,16 @@ const TeamWindow = ({ num, team }) => {
           {team.map((i) => (
             <QueueItemCard key={i.type + i.id} qItem={i} />
           ))}
+          {size > 0 && size < 6 && (
+            <div className="container mb-2 text-center">
+              <button
+                className="btn btn-primary col-5 mx-2"
+                onClick={onRefillTeam}
+              >
+                Fill Team
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
