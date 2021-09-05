@@ -102,14 +102,6 @@ class QueueView extends Component {
   render() {
     return (
       <div>
-        <button onClick={() => this.onAddPlayer("test", "OP")}>
-          add player
-        </button>
-        <button onClick={() => this.onAddPlayerToGroup("test", "OP", "group1")}>
-          add group
-        </button>
-        <button onClick={() => this.playTwoNext(0)}>next team</button>
-
         <div className="container">
           <div className="row gx-2">
             <div className="col-12 col-md-6">
@@ -118,7 +110,9 @@ class QueueView extends Component {
                 <TeamWindow num="2" team={this.state.teams[1]} />
               </div>
             </div>
-            <QueueWindow queue={this.state.queue} />
+            <div className="col-12 col-md-6">
+              <QueueWindow queue={this.state.queue} />
+            </div>
           </div>
           <div className="row gx-2">
             <AddPlayerWindow
