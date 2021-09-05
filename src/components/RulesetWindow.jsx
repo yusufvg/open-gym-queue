@@ -3,7 +3,7 @@ import React from "react";
 const RulesetWindow = ({ ruleset, onChangeRuleset }) => {
   return (
     <div className="col-12 col-md-6">
-      <div className="container mb-2 text-center">
+      <div className=" mb-2 text-center ">
         <div className="border bg-light p-2">
           <div className="btn-group">
             <button

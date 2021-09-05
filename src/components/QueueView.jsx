@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import AddPlayerWindow from "./AddPlayerWindow.jsx";
+import NavBar from "./NavBar.jsx";
 import { Player, Group, QueueItem } from "./QueueUtils.js";
 import QueueWindow from "./QueueWindow.jsx";
 import RulesetWindow from "./RulesetWindow.jsx";
@@ -228,11 +229,10 @@ class QueueView extends Component {
 
   render() {
     return (
-      // TODO fix margins on small view
-
       <div>
+        <NavBar />
         <div className="container">
-          <div className="row gx-2">
+          <div className="row gx-2 mb-2">
             <div className="col-12 col-md-6">
               <div className="row">
                 <TeamWindow
@@ -261,10 +261,12 @@ class QueueView extends Component {
             </div>
           </div>
           <div className="row gx-2">
-            <AddPlayerWindow
-              onAddPlayer={this.handleAddPlayer}
-              onAddPlayerToGroup={this.handleAddPlayerToGroup}
-            />
+            <div className="mb-2">
+              <AddPlayerWindow
+                onAddPlayer={this.handleAddPlayer}
+                onAddPlayerToGroup={this.handleAddPlayerToGroup}
+              />
+            </div>
             <RulesetWindow
               ruleset={this.state.ruleset}
               onChangeRuleset={this.handleChangeruleset}
