@@ -15,7 +15,8 @@ class Group {
 }
 
 class QueueItem {
-  constructor(type, size, item) {
+  constructor(id, type, size, item) {
+    this.id = id;
     this.type = type;
     this.size = size;
     this.item = item;

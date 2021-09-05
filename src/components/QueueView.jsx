@@ -1,5 +1,6 @@
 import { queue } from "async";
 import React, { Component } from "react";
+import QueueItemCard from "./QueueItemCard.jsx";
 import { Player, Group, QueueItem } from "./QueueUtils.js";
 
 class QueueView extends React.Component {
@@ -8,7 +9,8 @@ class QueueView extends React.Component {
     teams: [[], []],
     queue: [],
     size: 0,
-    nextID: 0,
+    nextPlayerID: 0,
+    nextItemID: 0,
   };
 
   playTwoNext = (winner) => {
@@ -39,18 +41,25 @@ class QueueView extends React.Component {
   twoOffNext = () => {};
 
   addPlayer = (name, position) => {
-    const newID = this.state.nextID;
-    const player = new Player(newID, name, position);
+    const newPlayerID = this.state.nextPlayerID;
+    const newItemID = this.state.nextItemID;
+    const player = new Player(newPlayerID, name, position);
     const queue = [...this.state.queue];
 
-    queue.push(new QueueItem("player", 1, player));
+    queue.push(new QueueItem(newItemID, "player", 1, player));
 
-    this.setState({ queue, nextID: newID + 1, size: this.state.size + 1 });
+    this.setState({
+      queue,
+      nextPlayerID: newPlayerID + 1,
+      nextItemID: newItemID + 1,
+      size: this.state.size + 1,
+    });
   };
 
   addPlayerToGroup = (name, position, group) => {
-    const newID = this.state.nextID;
-    const player = new Player(newID, name, position);
+    const newPlayerID = this.state.nextPlayerID;
+    const newItemID = this.state.nextItemID;
+    const player = new Player(newPlayerID, name, position);
     const queue = [...this.state.queue];
 
     // TODO : fix this ugly code you dolt
@@ -62,16 +71,25 @@ class QueueView extends React.Component {
         target = queue[i].item;
         target.size++;
         target.players.push(player);
-        queue.splice(i, 1, new QueueItem("group", target.size, target));
+        queue.splice(
+          i,
+          1,
+          new QueueItem(newItemID, "group", target.size, target)
+        );
         break;
       }
     }
 
     if (target.size === 1) {
-      queue.push(new QueueItem("group", target.size, target));
+      queue.push(new QueueItem(newItemID, "group", target.size, target));
     }
 
-    this.setState({ queue, nextID: newID + 1, size: this.state.size + 1 });
+    this.setState({
+      queue,
+      nextPlayerID: newPlayerID + 1,
+      nextItemID: newItemID + 1,
+      size: this.state.size + 1,
+    });
   };
 
   sizeOfItems(items) {
@@ -88,6 +106,12 @@ class QueueView extends React.Component {
           add group
         </button>
         <button onClick={() => this.playTwoNext(0)}>next team</button>
+
+        <div className="container">
+          {this.state.queue.map((i) => (
+            <QueueItemCard key={i.type + i.id} qItem={i} />
+          ))}
+        </div>
       </div>
     );
   }
