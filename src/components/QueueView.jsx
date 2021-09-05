@@ -1,10 +1,10 @@
-import { queue } from "async";
 import React, { Component } from "react";
+import AddPlayerWindow from "./AddPlayerWindow.jsx";
 import { Player, Group, QueueItem } from "./QueueUtils.js";
 import QueueWindow from "./QueueWindow.jsx";
 import TeamWindow from "./TeamWindow.jsx";
 
-class QueueView extends React.Component {
+class QueueView extends Component {
   state = {
     nextFunction: this.playTwoNext,
     teams: [[], []],
@@ -41,7 +41,7 @@ class QueueView extends React.Component {
 
   twoOffNext = () => {};
 
-  addPlayer = (name, position) => {
+  onAddPlayer = (name, position) => {
     const newPlayerID = this.state.nextPlayerID;
     const newItemID = this.state.nextItemID;
     const player = new Player(newPlayerID, name, position);
@@ -57,7 +57,7 @@ class QueueView extends React.Component {
     });
   };
 
-  addPlayerToGroup = (name, position, group) => {
+  onAddPlayerToGroup = (name, position, group) => {
     const newPlayerID = this.state.nextPlayerID;
     const newItemID = this.state.nextItemID;
     const player = new Player(newPlayerID, name, position);
@@ -102,8 +102,10 @@ class QueueView extends React.Component {
   render() {
     return (
       <div>
-        <button onClick={() => this.addPlayer("test", "OP")}>add player</button>
-        <button onClick={() => this.addPlayerToGroup("test", "OP", "group1")}>
+        <button onClick={() => this.onAddPlayer("test", "OP")}>
+          add player
+        </button>
+        <button onClick={() => this.onAddPlayerToGroup("test", "OP", "group1")}>
           add group
         </button>
         <button onClick={() => this.playTwoNext(0)}>next team</button>
@@ -117,6 +119,12 @@ class QueueView extends React.Component {
               </div>
             </div>
             <QueueWindow queue={this.state.queue} />
+          </div>
+          <div className="row gx-2">
+            <AddPlayerWindow
+              handleAddPlayer={this.onAddPlayer}
+              handleAddPlayerToGroup={this.onAddPlayerToGroup}
+            />
           </div>
         </div>
       </div>

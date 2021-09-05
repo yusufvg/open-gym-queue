@@ -1,7 +1,7 @@
-import React, { Component } from "react";
+import React from "react";
 
 const QueueItemCard = ({ qItem }) => {
-  const { type, size, item } = qItem;
+  const { type, item } = qItem;
 
   const players = type === "group" ? item.players : [item];
 
