@@ -7,6 +7,7 @@ const QueueItemCard = ({ qItem }) => {
 
   return (
     <div className="card p-2 mb-2">
+      {type === "group" && <h5>{item.name}</h5>}
       {players.map((p) => (
         <p key={p.id}>
           {p.name}, {p.position}

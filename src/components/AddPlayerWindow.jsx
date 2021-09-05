@@ -11,11 +11,11 @@ class AddPlayerWindow extends React.Component {
     e.preventDefault();
 
     const { name, position, group } = this.state;
-    const { handleAddPlayer, handleAddPlayerToGroup } = this.props;
+    const { onAddPlayer, onAddPlayerToGroup } = this.props;
 
     group === ""
-      ? handleAddPlayer(name, position)
-      : handleAddPlayerToGroup(name, position, group);
+      ? onAddPlayer(name, position)
+      : onAddPlayerToGroup(name, position, group);
 
     this.setState({ name: "", position: "Outside Hitter", group: "" });
   };

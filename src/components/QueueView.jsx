@@ -2,11 +2,12 @@ import React, { Component } from "react";
 import AddPlayerWindow from "./AddPlayerWindow.jsx";
 import { Player, Group, QueueItem } from "./QueueUtils.js";
 import QueueWindow from "./QueueWindow.jsx";
+import RulesetWindow from "./RulesetWindow.jsx";
 import TeamWindow from "./TeamWindow.jsx";
 
 class QueueView extends Component {
   state = {
-    ruleSet: "playtwo",
+    ruleset: "playtwo",
     teams: [[], []],
     queue: [],
     size: 0,
@@ -14,11 +15,10 @@ class QueueView extends Component {
     nextItemID: 0,
   };
 
-  requeueTeam = (i) => {
-    let teams = [...this.state.teams];
-    const queue = [...this.state.queue];
-    teams[i].forEach((i) => queue.push(i));
-    teams = [teams[(i + 1) % 2], []];
+  // ruleset functions
+  requeueTeam = (teams, queue, winner) => {
+    teams[winner].forEach((i) => queue.push(i));
+    teams = [teams[(winner + 1) % 2], []];
     return { teams, queue };
   };
 
@@ -39,7 +39,9 @@ class QueueView extends Component {
   };
 
   playTwoNext = () => {
-    let { teams, queue } = this.requeueTeam(0);
+    let teams = [...this.state.teams];
+    let queue = [...this.state.queue];
+    ({ teams, queue } = this.requeueTeam(teams, queue, 0));
 
     let team;
     ({ team, queue } = this.draftTeam([], queue));
@@ -49,8 +51,10 @@ class QueueView extends Component {
   };
 
   twoOffNext = () => {
-    let { teams, queue } = this.requeueTeam(0);
-    ({ teams, queue } = this.requeueTeam(1));
+    let teams = [...this.state.teams];
+    let queue = [...this.state.queue];
+    ({ teams, queue } = this.requeueTeam(teams, queue, 0));
+    ({ teams, queue } = this.requeueTeam(teams, queue, 0));
 
     let team;
     ({ team, queue } = this.draftTeam([], queue));
@@ -63,7 +67,9 @@ class QueueView extends Component {
   };
 
   kingsCourtNext = (winner) => {
-    let { teams, queue } = this.requeueTeam(winner);
+    let teams = [...this.state.teams];
+    let queue = [...this.state.queue];
+    ({ teams, queue } = this.requeueTeam(teams, queue, winner));
 
     let team;
     ({ team, queue } = this.draftTeam([], queue));
@@ -72,7 +78,8 @@ class QueueView extends Component {
     this.setState({ teams, queue, size: this.sizeOfItems(queue) });
   };
 
-  onAddPlayer = (name, position) => {
+  // player event handlers
+  handleAddPlayer = (name, position) => {
     const newPlayerID = this.state.nextPlayerID;
     const newItemID = this.state.nextItemID;
     const player = new Player(newPlayerID, name, position);
@@ -88,7 +95,7 @@ class QueueView extends Component {
     });
   };
 
-  onAddPlayerToGroup = (name, position, group) => {
+  handleAddPlayerToGroup = (name, position, group) => {
     const newPlayerID = this.state.nextPlayerID;
     const newItemID = this.state.nextItemID;
     const player = new Player(newPlayerID, name, position);
@@ -124,8 +131,12 @@ class QueueView extends Component {
     });
   };
 
+  handleChangeruleset = (ruleset) => {
+    this.setState({ ruleset });
+  };
+
   getNextButtons = () => {
-    switch (this.state.ruleSet) {
+    switch (this.state.ruleset) {
       case "playtwo":
         return (
           <div className="container mb-2 text-center">
@@ -137,7 +148,7 @@ class QueueView extends Component {
             </button>
           </div>
         );
-      case "twoOff":
+      case "twooff":
         return (
           <div className="container mb-2 text-center">
             <button
@@ -179,6 +190,8 @@ class QueueView extends Component {
 
   render() {
     return (
+      // TODO fix margins on small view
+
       <div>
         <div className="container">
           <div className="row gx-2">
@@ -197,8 +210,12 @@ class QueueView extends Component {
           </div>
           <div className="row gx-2">
             <AddPlayerWindow
-              handleAddPlayer={this.onAddPlayer}
-              handleAddPlayerToGroup={this.onAddPlayerToGroup}
+              onAddPlayer={this.handleAddPlayer}
+              onAddPlayerToGroup={this.handleAddPlayerToGroup}
+            />
+            <RulesetWindow
+              ruleset={this.state.ruleset}
+              onChangeRuleset={this.handleChangeruleset}
             />
           </div>
         </div>
