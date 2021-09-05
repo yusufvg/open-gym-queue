@@ -1,28 +1,6 @@
+import { queue } from "async";
 import React, { Component } from "react";
-
-class Player {
-  constructor(id, name, position) {
-    this.id = id;
-    this.name = name;
-    this.position = position;
-  }
-}
-
-class Group {
-  constructor(size, name, players) {
-    this.size = size;
-    this.name = name;
-    this.players = players;
-  }
-}
-
-class QueueItem {
-  constructor(type, size, item) {
-    this.type = type;
-    this.size = size;
-    this.item = item;
-  }
-}
+import { Player, Group, QueueItem } from "./QueueUtils.js";
 
 class QueueView extends React.Component {
   state = {
@@ -33,7 +11,30 @@ class QueueView extends React.Component {
     nextID: 0,
   };
 
-  playTwoNext = (winner) => {};
+  playTwoNext = (winner) => {
+    let teams = [...this.state.teams];
+    const queue = [...this.state.queue];
+    teams[winner].forEach((i) => queue.push(i));
+    teams = [teams[(winner + 1) % 2], []];
+
+    let newTeam = [];
+    let size = 0;
+    let curr = 0;
+    while (size < 6 && curr < queue.length) {
+      const i = queue[curr];
+      if (i.size + size <= 6) {
+        newTeam.push(i);
+        size += i.size;
+        queue.splice(curr, 1);
+      } else {
+        curr++;
+      }
+    }
+
+    teams[1] = newTeam;
+
+    this.setState({ teams, queue, size: this.sizeOfItems(queue) });
+  };
 
   twoOffNext = () => {};
 
@@ -73,12 +74,20 @@ class QueueView extends React.Component {
     this.setState({ queue, nextID: newID + 1, size: this.state.size + 1 });
   };
 
+  sizeOfItems(items) {
+    return items.length === 0
+      ? 0
+      : items.map((i) => i.size).reduce((sum, i) => sum + i);
+  }
+
   render() {
     return (
       <div>
+        <button onClick={() => this.addPlayer("test", "OP")}>add player</button>
         <button onClick={() => this.addPlayerToGroup("test", "OP", "group1")}>
-          Test
+          add group
         </button>
+        <button onClick={() => this.playTwoNext(0)}>next team</button>
       </div>
     );
   }
