@@ -13,8 +13,6 @@ class AddPlayerWindow extends React.Component {
     const { name, position, group } = this.state;
     const { handleAddPlayer, handleAddPlayerToGroup } = this.props;
 
-    console.log(name, position, group);
-
     group === ""
       ? handleAddPlayer(name, position)
       : handleAddPlayerToGroup(name, position, group);

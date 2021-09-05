@@ -6,7 +6,7 @@ import TeamWindow from "./TeamWindow.jsx";
 
 class QueueView extends Component {
   state = {
-    nextFunction: this.playTwoNext,
+    ruleSet: "playtwo",
     teams: [[], []],
     queue: [],
     size: 0,
@@ -14,32 +14,63 @@ class QueueView extends Component {
     nextItemID: 0,
   };
 
-  playTwoNext = (winner) => {
+  requeueTeam = (i) => {
     let teams = [...this.state.teams];
     const queue = [...this.state.queue];
-    teams[winner].forEach((i) => queue.push(i));
-    teams = [teams[(winner + 1) % 2], []];
+    teams[i].forEach((i) => queue.push(i));
+    teams = [teams[(i + 1) % 2], []];
+    return { teams, queue };
+  };
 
-    let newTeam = [];
+  draftTeam = (team, queue) => {
     let size = 0;
-    let curr = 0;
+    let curr = this.sizeOfItems(team);
     while (size < 6 && curr < queue.length) {
       const i = queue[curr];
       if (i.size + size <= 6) {
-        newTeam.push(i);
+        team.push(i);
         size += i.size;
         queue.splice(curr, 1);
       } else {
         curr++;
       }
     }
+    return { team, queue };
+  };
 
-    teams[1] = newTeam;
+  playTwoNext = () => {
+    let { teams, queue } = this.requeueTeam(0);
+
+    let team;
+    ({ team, queue } = this.draftTeam([], queue));
+    teams[1] = team;
 
     this.setState({ teams, queue, size: this.sizeOfItems(queue) });
   };
 
-  twoOffNext = () => {};
+  twoOffNext = () => {
+    let { teams, queue } = this.requeueTeam(0);
+    ({ teams, queue } = this.requeueTeam(1));
+
+    let team;
+    ({ team, queue } = this.draftTeam([], queue));
+    teams[0] = team;
+
+    ({ team, queue } = this.draftTeam([], queue));
+    teams[1] = team;
+
+    this.setState({ teams, queue, size: this.sizeOfItems(queue) });
+  };
+
+  kingsCourtNext = (winner) => {
+    let { teams, queue } = this.requeueTeam(winner);
+
+    let team;
+    ({ team, queue } = this.draftTeam([], queue));
+    teams[(winner + 1) % 2] = team;
+
+    this.setState({ teams, queue, size: this.sizeOfItems(queue) });
+  };
 
   onAddPlayer = (name, position) => {
     const newPlayerID = this.state.nextPlayerID;
@@ -93,6 +124,53 @@ class QueueView extends Component {
     });
   };
 
+  getNextButtons = () => {
+    switch (this.state.ruleSet) {
+      case "playtwo":
+        return (
+          <div className="container mb-2 text-center">
+            <button
+              className="btn btn-primary col-5 mx-2"
+              onClick={this.playTwoNext}
+            >
+              Next Game
+            </button>
+          </div>
+        );
+      case "twoOff":
+        return (
+          <div className="container mb-2 text-center">
+            <button
+              className="btn btn-primary col-5 mx-2"
+              onClick={this.twoOffNext}
+            >
+              Next Game
+            </button>
+          </div>
+        );
+      case "kings":
+        return (
+          <div className="container mb-2 text-center">
+            <button
+              className="btn btn-primary col-5 mx-2"
+              onClick={() => this.kingsCourtNext(0)}
+            >
+              Team 1 Won
+            </button>
+            <button
+              className="btn btn-primary col-5 mx-2"
+              onClick={() => this.kingsCourtNext(1)}
+            >
+              Team 2 Won
+            </button>
+          </div>
+        );
+
+      default:
+        break;
+    }
+  };
+
   sizeOfItems(items) {
     return items.length === 0
       ? 0
@@ -111,7 +189,10 @@ class QueueView extends Component {
               </div>
             </div>
             <div className="col-12 col-md-6">
-              <QueueWindow queue={this.state.queue} />
+              <QueueWindow
+                queue={this.state.queue}
+                getNextButtons={this.getNextButtons}
+              />
             </div>
           </div>
           <div className="row gx-2">
