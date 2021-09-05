@@ -8,14 +8,15 @@ const QueueItemCard = ({ qItem, actionButton }) => {
 
   return (
     <div className="card p-2 mb-2 g-x1">
-      <div className="container px-1 border">
+      <div className="container pe-3">
         {type === "group" && <h5>{item.name}</h5>}
-        <div className="row border">
+        <div className="row  align-items-center">
           <div className="col-10">
             {console.log("adding players to card: ", players)}
             {players.map((p) => (
-              <p key={p.id}>
-                {p.name}, {p.position}
+              <p key={p.id} className="h5">
+                <span className="badge bg-secondary me-1">{p.name}</span>
+                <span className="badge bg-dark">{p.position}</span>
               </p>
             ))}
           </div>
