@@ -106,7 +106,6 @@ class QueueView extends Component {
     let target = new Group(1, group, [player]);
     for (let i = 0; i < queue.length; i++) {
       if (queue[i].type === "group" && queue[i].item.name === group) {
-        console.log(i, queue[i]);
         target = queue[i].item;
         target.size++;
         target.players.push(player);
@@ -129,6 +128,33 @@ class QueueView extends Component {
       nextItemID: newItemID + 1,
       size: this.state.size + 1,
     });
+  };
+
+  handleRemoveFromTeam = (num, item) => {
+    const teams = [...this.state.teams];
+    const queue = [...this.state.queue];
+    queue.push(teams[num].splice(teams[num].indexOf(item), 1)[0]);
+    this.setState({ teams, queue });
+  };
+
+  handleRemovePlayer = (player) => {
+    let queue = [...this.state.queue];
+    queue.splice(queue.indexOf(player), 1);
+    this.setState({ queue });
+  };
+
+  handleSplitGroup = (group) => {
+    let queue = [...this.state.queue];
+    let newItemID = this.state.nextItemID;
+    queue.splice(
+      queue.indexOf(group),
+      1,
+      ...group.item.players.map(
+        (p) => new QueueItem(newItemID++, "player", 1, p)
+      )
+    );
+    console.log("Updated queue post split: ", queue);
+    this.setState({ queue, newItemID });
   };
 
   handleRefillTeam = (num) => {
@@ -214,12 +240,14 @@ class QueueView extends Component {
                   team={this.state.teams[0]}
                   size={this.sizeOfItems(this.state.teams[0])}
                   onRefillTeam={() => this.handleRefillTeam(0)}
+                  onRemoveFromTeam={() => this.handleRemoveFromTeam(0)}
                 />
                 <TeamWindow
                   num="2"
                   team={this.state.teams[1]}
                   size={this.sizeOfItems(this.state.teams[1])}
                   onRefillTeam={() => this.handleRefillTeam(1)}
+                  onRemoveFromTeam={() => this.handleRemoveFromTeam(1)}
                 />
               </div>
             </div>
@@ -227,6 +255,8 @@ class QueueView extends Component {
               <QueueWindow
                 queue={this.state.queue}
                 getNextButtons={this.getNextButtons}
+                onRemovePlayer={this.handleRemovePlayer}
+                onSplitGroup={this.handleSplitGroup}
               />
             </div>
           </div>
