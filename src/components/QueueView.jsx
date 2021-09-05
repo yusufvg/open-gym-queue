@@ -1,7 +1,8 @@
 import { queue } from "async";
 import React, { Component } from "react";
-import QueueItemCard from "./QueueItemCard.jsx";
 import { Player, Group, QueueItem } from "./QueueUtils.js";
+import QueueWindow from "./QueueWindow.jsx";
+import TeamWindow from "./TeamWindow.jsx";
 
 class QueueView extends React.Component {
   state = {
@@ -108,9 +109,15 @@ class QueueView extends React.Component {
         <button onClick={() => this.playTwoNext(0)}>next team</button>
 
         <div className="container">
-          {this.state.queue.map((i) => (
-            <QueueItemCard key={i.type + i.id} qItem={i} />
-          ))}
+          <div className="row gx-2">
+            <div className="col-12 col-md-6">
+              <div className="row">
+                <TeamWindow num="1" team={this.state.teams[0]} />
+                <TeamWindow num="2" team={this.state.teams[1]} />
+              </div>
+            </div>
+            <QueueWindow queue={this.state.queue} />
+          </div>
         </div>
       </div>
     );

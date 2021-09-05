@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Player, Group, QueueItem } from "./QueueUtils.js";
 
 const QueueItemCard = ({ qItem }) => {
   const { type, size, item } = qItem;
@@ -7,7 +6,7 @@ const QueueItemCard = ({ qItem }) => {
   const players = type === "group" ? item.players : [item];
 
   return (
-    <div className="card">
+    <div className="card p-2 m-2">
       {players.map((p) => (
         <p key={p.id}>
           {p.name}, {p.position}
