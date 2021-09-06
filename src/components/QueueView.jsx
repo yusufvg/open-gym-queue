@@ -102,26 +102,18 @@ class QueueView extends Component {
     const player = new Player(newPlayerID, name, position);
     const queue = [...this.state.queue];
 
-    // TODO : fix this ugly code you dolt
-
     let target = new Group(1, group, [player]);
     for (let i = 0; i < queue.length; i++) {
       if (queue[i].type === "group" && queue[i].item.name === group) {
-        target = queue[i].item;
+        target = queue.splice(i, 1)[0].item;
+        console.log(target);
         target.size++;
         target.players.push(player);
-        queue.splice(
-          i,
-          1,
-          new QueueItem(newItemID, "group", target.size, target)
-        );
         break;
       }
     }
 
-    if (target.size === 1) {
-      queue.push(new QueueItem(newItemID, "group", target.size, target));
-    }
+    queue.push(new QueueItem(newItemID, "group", target.size, target));
 
     this.setState({
       queue,
